@@ -1,7 +1,6 @@
 package lw01.prelab;
 
 public abstract class PrintJob implements Chargeable {
-
     private String id;
     private int pages;
 
@@ -21,9 +20,10 @@ public abstract class PrintJob implements Chargeable {
         return pages;
     }
 
-    @Override
+    @Override 
     public abstract int calculateCharge();
 
+    //ini overloading method
     public int calculateCharge(int copies) {
         if (copies <= 0) {
             throw new IllegalArgumentException("copies must be positive");
@@ -34,7 +34,7 @@ public abstract class PrintJob implements Chargeable {
     public String label() {
         return "Print";
     }
-
+    
     public String summary() {
         return id + " | " + label() + " | " + calculateCharge();
     }

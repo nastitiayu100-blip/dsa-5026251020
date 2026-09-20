@@ -1,30 +1,23 @@
 package lw01.prelab;
 
 public class ColourPrint extends PrintJob {
-
-    private static final int TIER1_LIMIT = 10;
-    private static final int TIER1_RATE = 1500;
-    private static final int TIER2_RATE = 1000;
-    private static final int SETUP_FEE = 2000;
-
-    public ColourPrint(String id, int pages) {
+        public ColourPrint(String id, int pages) {
         super(id, pages);
     }
 
     @Override
     public int calculateCharge() {
         int pages = getPages();
-        int charge;
-        if (pages <= TIER1_LIMIT) {
-            charge = pages * TIER1_RATE;
+        int total;
+        if (pages <= 10) {
+            total = pages * 1500;
         } else {
-            charge = (TIER1_LIMIT * TIER1_RATE) + ((pages - TIER1_LIMIT) * TIER2_RATE);
+            total = (10 * 1500) + ((pages - 10) * 1000);
         }
-        charge += SETUP_FEE;
-        return charge;
+        return total + 2000;
     }
 
-    @Override
+    @Override 
     public String label() {
         return "Colour";
     }

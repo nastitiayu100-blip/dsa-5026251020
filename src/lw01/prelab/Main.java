@@ -23,7 +23,7 @@ public class Main {
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("jobs.txt not found: " + e.getMessage());
+            System.out.println("jobs.txt tidak ditemukan");
             return;
         }
 
