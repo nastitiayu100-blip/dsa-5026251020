@@ -14,6 +14,13 @@
       "request": "launch",
       "mainClass": "lw01.prelab.Main",
       "cwd": "${workspaceFolder}/src/lw01/prelab"
+    },
+    {
+      "type": "java",
+      "name": "Run LW02 Prelab",
+      "request": "launch",
+      "mainClass": "lw02.prelab.BankTransactionProcessor",
+      "cwd": "${workspaceFolder}/src/lw02/prelab"
     }
   ]
 }
