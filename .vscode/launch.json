@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "LibraryBorrowing",
+      "request": "launch",
+      "mainClass": "lw02.unguided.LibraryBorrowing",
+      "projectName": "dsa-5026251020_a85e2df3"
+    },
+    {
+      "type": "java",
       "name": "Run Unguided",
       "request": "launch",
       "mainClass": "lw01.unguided.Main",
