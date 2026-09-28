@@ -1,7 +1,5 @@
 package lw02.prelab;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
@@ -12,89 +10,77 @@ public class BankTransactionProcessor {
     public static void main(String[] args) {
 
         LinkedList<String[]> transactions = new LinkedList<>();
-
-        try {
-            File file = new File("transactions.txt");
-            Scanner scanner = new Scanner(file);
-
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine().trim();
-                if (line.isEmpty()) {
-                    continue;
-                }
-                String[] parts = line.split("\\s+");
-                transactions.add(parts);
-            }
-            scanner.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("File transactions.txt not found.");
-            return;
-        }
-
         LinkedList<String[]> customers = new LinkedList<>();
 
-        for (String[] tx : transactions) {
-            String name = tx[0];
-            if (!customerExists(customers, name)) {
-                customers.add(new String[] { name, "0" });
+        Queue<String[]> transactionQueue = new LinkedList<>();
+        Stack<String[]> transactionStack = new Stack<>();
+
+        Scanner scanner = new Scanner(BankTransactionProcessor.class.getResourceAsStream("transactions.txt"));
+
+        while (scanner.hasNext()) {
+            String[] transaction = new String[3];
+            transaction[0] = scanner.next();
+            transaction[1] = scanner.next();
+            transaction[2] = scanner.next();
+            transactions.add(transaction);
+        }
+
+        scanner.close();
+
+        for (String[] transaction : transactions) {
+            boolean exists = false;
+            for (String[] data : customers) {
+                if (data[0].equals(transaction[0])) {
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists) {
+                customers.add(new String[] { transaction[0], "0" });
             }
         }
 
-        Queue<String[]> transactionQueue = new LinkedList<>();
         transactionQueue.addAll(transactions);
 
-        Stack<String[]> failedTransactions = new Stack<>();
-
         while (!transactionQueue.isEmpty()) {
-            String[] tx = transactionQueue.poll();
-            String name = tx[0];
-            String type = tx[1];
-            int amount = Integer.parseInt(tx[2]);
+            String[] transaction = transactionQueue.poll();
 
-            String[] customer = findCustomer(customers, name);
+            String name = transaction[0];
+            String type = transaction[1];
+            int amount = Integer.parseInt(transaction[2]);
+
+            String[] customer = null;
+
+            for (String[] data : customers) {
+                if (data[0].equals(name)) {
+                    customer = data;
+                    break;
+                }
+            }
+
             int balance = Integer.parseInt(customer[1]);
 
             if (type.equals("DEPOSIT")) {
-                balance += amount;
-                customer[1] = String.valueOf(balance);
+                customer[1] = String.valueOf(balance + amount);
             } else if (type.equals("WITHDRAW")) {
                 if (amount > balance) {
-                    failedTransactions.push(tx);
+                    transactionStack.push(transaction);
                 } else {
-                    balance -= amount;
-                    customer[1] = String.valueOf(balance);
+                    customer[1] = String.valueOf(balance - amount);
                 }
             }
         }
 
         System.out.println("=== Final Balances ===");
-        for (String[] customer : customers) {
-            System.out.println(customer[0] + " : " + customer[1]);
+        for (String[] data : customers) {
+            System.out.println(data[0] + " : " + data[1]);
         }
 
         System.out.println();
         System.out.println("=== Failed Transactions ===");
-        while (!failedTransactions.isEmpty()) {
-            String[] tx = failedTransactions.pop();
-            System.out.println(tx[0] + " " + tx[1] + " " + tx[2]);
+        while (!transactionStack.isEmpty()) {
+            String[] transaction = transactionStack.pop();
+            System.out.println(transaction[0] + " " + transaction[1] + " " + transaction[2]);
         }
-    }
-
-    private static boolean customerExists(LinkedList<String[]> customers, String name) {
-        for (String[] c : customers) {
-            if (c[0].equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static String[] findCustomer(LinkedList<String[]> customers, String name) {
-        for (String[] c : customers) {
-            if (c[0].equals(name)) {
-                return c;
-            }
-        }
-        return null;
     }
 }
