@@ -1,6 +1,5 @@
 package lw03.prelab;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -24,106 +23,100 @@ public class Main {
     // ========================================
     public static void problem1() throws FileNotFoundException {
 
-        System.out.println("===== Problem 1 =====");
-
         List<String> playlist = new ArrayList<>();
 
-        Scanner scanner = new Scanner(new File("src/lw03/prelab/playlist.txt"));
-
+        Scanner scanner = new Scanner(Main.class.getResourceAsStream("playlist.txt"));
         while (scanner.hasNextLine()) {
 
             String line = scanner.nextLine();
+            String[] parts = line.split(" ", 2);
 
-            if (line.startsWith("ADD ")) {
+            String operation = parts[0];
+            String song = parts[1];
 
-                String song = line.substring(4);
+            if (operation.equals("ADD")) {
+
                 playlist.add(song);
 
-            } else if (line.startsWith("INSERT ")) {
+            } else if (operation.equals("INSERT")) {
 
-                String[] parts = line.split(" ", 3);
+                String[] insertData = parts[1].split(" ", 2);
 
-                int index = Integer.parseInt(parts[1]);
-                String song = parts[2];
+                int index = Integer.parseInt(insertData[0]);
+                String songName = insertData[1];
 
-                playlist.add(index, song);
+                playlist.add(index, songName);
 
-            } else if (line.startsWith("REMOVE ")) {
+            } else if (operation.equals("REMOVE")) {
 
-                String song = line.substring(7);
                 playlist.remove(song);
             }
         }
 
         scanner.close();
 
+        System.out.println("===== Problem 1 =====");
         System.out.println("Total songs: " + playlist.size());
 
         for (int i = 0; i < playlist.size(); i++) {
-
             System.out.println((i + 1) + ": " + playlist.get(i));
         }
-
-        System.out.println();
     }
 
 
-    // ========================================
-    // PROBLEM 2 - PARTICIPANTS
-    // ========================================
+    // =========================
+    // PROBLEM 2 - SET
+    // =========================
     public static void problem2() throws FileNotFoundException {
-
-        System.out.println("===== Problem 2 =====");
 
         Set<String> participants = new LinkedHashSet<>();
 
         int duplicateRegistrations = 0;
 
-        Scanner scanner = new Scanner(new File("src/lw03/prelab/participants.txt"));
+        Scanner scanner = new Scanner(Main.class.getResourceAsStream("participants.txt"));
 
         while (scanner.hasNextLine()) {
 
             String name = scanner.nextLine();
 
-            if (!participants.add(name)) {
+            if (participants.contains(name)) {
 
                 duplicateRegistrations++;
+
+            } else {
+
+                participants.add(name);
             }
         }
 
         scanner.close();
 
+        System.out.println("===== Problem 2 =====");
         System.out.println("Unique participants: " + participants.size());
 
         int number = 1;
 
-        for (String name : participants) {
+        for (String participant : participants) {
 
-            System.out.println(number + ". " + name);
+            System.out.println(number + ". " + participant);
 
             number++;
         }
 
-        System.out.println(
-                "Duplicate registrations: " + duplicateRegistrations
-        );
-
-        System.out.println();
+        System.out.println("Duplicate registrations: " + duplicateRegistrations);
     }
 
 
-    // ========================================
-    // PROBLEM 3 - INVENTORY
-    // ========================================
+    // =========================
+    // PROBLEM 3 - MAP
+    // =========================
     public static void problem3() throws FileNotFoundException {
-
-        System.out.println("===== Problem 3 =====");
 
         Map<String, Integer> inventory = new LinkedHashMap<>();
 
         int failedSales = 0;
 
-        Scanner scanner = new Scanner(new File("src/lw03/prelab/inventory.txt"));
+        Scanner scanner = new Scanner(Main.class.getResourceAsStream("inventory.txt"));
 
         while (scanner.hasNextLine()) {
 
@@ -137,18 +130,15 @@ public class Main {
 
             if (type.equals("ADD")) {
 
-                if (!inventory.containsKey(product)) {
-
-                    inventory.put(product, quantity);
-
-                } else {
+                if (inventory.containsKey(product)) {
 
                     int currentStock = inventory.get(product);
 
-                    inventory.put(
-                            product,
-                            currentStock + quantity
-                    );
+                    inventory.put(product, currentStock + quantity);
+
+                } else {
+
+                    inventory.put(product, quantity);
                 }
 
             } else if (type.equals("SELL")) {
@@ -159,10 +149,7 @@ public class Main {
 
                     if (currentStock >= quantity) {
 
-                        inventory.put(
-                                product,
-                                currentStock - quantity
-                        );
+                        inventory.put(product, currentStock - quantity);
 
                     } else {
 
@@ -178,11 +165,13 @@ public class Main {
 
         scanner.close();
 
-        for (Map.Entry<String, Integer> entry : inventory.entrySet()) {
+        System.out.println("===== Problem 3 =====");
 
-            System.out.println(
-                    entry.getKey() + ": " + entry.getValue()
-            );
+        for (String product : inventory.keySet()) {
+
+            int stock = inventory.get(product);
+
+            System.out.println(product + ": " + stock);
         }
 
         System.out.println("Failed sales: " + failedSales);
