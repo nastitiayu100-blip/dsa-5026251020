@@ -1,5 +1,4 @@
 package lw04.prelab;
-
 import java.io.InputStream;
 import java.util.Scanner;
 
